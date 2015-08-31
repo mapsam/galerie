@@ -3,8 +3,6 @@ var galerie = (function(){
   // GLOBALS
   /////////////////////////////////
   var rotatorTimer;
-  var speed = 500;
-  var interval = 3000;
   var items = [];
 
   /////////////////////////////////
