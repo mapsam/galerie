@@ -3,106 +3,117 @@ var galerie = (function(){
   // GLOBALS
   /////////////////////////////////
   var rotatorTimer;
+  var items = [];
 
   /////////////////////////////////
-  // INITIALIZE
+  // Initialize the galerie
   /////////////////////////////////
   function init() {
-    console.log('galerie initialized!');
-    setBannerRotation();
-  }
-  var speed = 500;
-  var interval = 3000;
+    var tempitems = document.getElementsByClassName('galerie-item');
+    for (var i = 0; i < tempitems.length; i++) {
+      items.push(tempitems[i]);
+    }
 
-  /////////////////////////////////
-  // START THE BANNER
-  /////////////////////////////////
-  function setBannerRotation() {
-    if($('.galerie .item').length > 1) {
-      $('.galerie .item').hide().eq(0).show();
-      rotatorTimer = setTimeout(function() { rotateBanner(1); }, interval);
+    setDataAttr();
+    function setDataAttr() {
+      console.log(items);
+      for (var e = 0; e < items.length; e++) {
+        items[e].setAttribute('data-galerie', e);
+      }
     }
   }
 
   /////////////////////////////////
-  // NEXT
+  // Next item
   /////////////////////////////////
   function next() {
-    var s = getSliderState();
-      if(s['current-slide']===s['total-slides']) {
-        rotateBanner(0);
+    var s = getState();
+      if(s.currentId+1===s.total) {
+        rotateBanner(0); // back to the beginning
       } else {
-        rotateBanner(s['current-slide']);
+        rotateBanner(s.currentId+1);
       }
   }
 
   /////////////////////////////////
-  // PREVIOUS
+  // Previous item 
   /////////////////////////////////
   function prev() {
-    var s = getSliderState();
-    if(s['current-slide']!=1) {
-      rotateBanner(s['current-slide']-2);
+    var s = getState();
+    if(s.currentId!==0) {
+      rotateBanner(s.currentId-1);
     } else {
-      rotateBanner(s['total-slides']-1);
+      rotateBanner(s.total-1);
     }
   }
 
   /////////////////////////////////
-  // CAROUSEL STATE
+  // State of the galerie
   /////////////////////////////////
   /*
   Returns the current state of the slider and necessary data when invoked.
   Used in next() and prev() to get data for pushing to the next slide from current.
-  Can be used in the API via slippyslide.state(); to return information for extending the slider
+  Can be used in the API via galerie.state(); to return information for extending the slider
   */
-  function getSliderState() {
-    var current = $('.item.on');
-    var slides = $('.item').length;
-    var slide = $('.item').index(current) + 1;
+  function getState() {
+    var current = document.getElementsByClassName('galerie-current')[0];
     var s = {
-      'total-slides': slides,
-      'current-slide': slide
+      'total': items.length,
+      'currentElem': current,
+      'currentId': parseInt(current.getAttribute('data-galerie'))
     };
     return s;
   }
 
   /////////////////////////////////
-  // BANNER ROTATER
+  // Timed rotate 
   /////////////////////////////////
-  function rotateBanner(num){
-    // clear current slider timer
-    clearTimeout(rotatorTimer);
-
-    // fade out current slide
-    $('.galerie .on').removeClass('on').fadeOut(speed);
-
-    // fade in next item based on num
-    $('.galerie .item').eq(num).addClass('on').fadeIn(speed);
-
-    // change num to the next slide, or reset to zero if current slide is the last
-    num = (num+1 == $('.galerie .item').length) ? 0: num+1;
-
-    // set a new timer to continue the slider
-    rotatorTimer = setTimeout(function() { rotateBanner(num); }, interval);
+  function rotate(interval) {
+    stopRotation(); // reset
+    rotatorTimer = setInterval(function() { next(); }, interval || 5000);
+  }
+  // stops the rotation
+  function stopRotation() {
+    clearInterval(rotatorTimer);
   }
 
   /////////////////////////////////
-  // ERROR HANDLER
+  // Set banner, requires an ID
   /////////////////////////////////
-  function err(error) {
-    console.log(error);
+  function rotateBanner(id){
+    var s = getState();
+    s.currentElem.className = 'galerie-item';
+
+    var upcoming = getElementByGalerieAttr(items, id);
+    upcoming.className += ' galerie-current';
+  }
+
+  function getElementByGalerieAttr(array, match) {
+    for (var i = 0; i < array.length; i++) {
+      var id = array[i].getAttribute('data-galerie');
+      if (id == match) return array[i];
+    }
   }
 
   /////////////////////////////////
-  // RETURN STATES for PUBLIC API
+  // Error handler
+  /////////////////////////////////
+  function err(message) {
+    var e = new Error(message);
+    throw e;
+  }
+
+  /////////////////////////////////
+  // Public Functions
   /////////////////////////////////
   return {
     init: init,
-    next: next,
-    prev: prev,
-    state: getSliderState,
-    err: err
+    items: items,
+    nextItem: next,
+    previousItem: prev,
+    getState: getState,
+    rotate: rotate,
+    stopRotation: stopRotation
   };
 
 })();

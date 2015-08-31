@@ -1,7 +1,7 @@
 {
   "name": "galerie",
-  "version": "0.0.1",
-  "description": "image gallery slider for quick coders",
+  "version": "0.1",
+  "description": "Element rotator for quick coders",
   "homepage": "https://github.com/svmatthews/galerie",
   "bugs": "https://github.com/svmatthews/galerie/issues",
   "main": "src/galerie.js",

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width" charset="UTF-8">
+    <title>Galerie</title>
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script src="/src/galerie.js" type="text/javascript"></script>
+  </head>
+  <style>
+  body {margin:0;padding:0;}
+  .galerie {}
+  .galerie .galerie-item {
+    width: 100%;
+    height:auto;
+    display: none;
+  }
+  .galerie .galerie-item.galerie-current {
+    display: block;
+  }
+  </style>
+<body>
+
+  <div class="galerie">
+    <div class="galerie-item galerie-current">
+      <p><code>elliot-bay-downtown.png</code></p>
+      <img src="img/elliot-bay-downtown.png">
+    </div>
+    <div class="galerie-item ">
+      <p><code>elliot-bay-with-ship.png</code></p>
+      <img src="img/elliot-bay-with-ship.png">
+    </div>
+    <div class="galerie-item ">
+      <p><code>sound-lighthouse.png</code></p>
+      <img src="img/sound-lighthouse.png">
+    </div>
+    <div class="galerie-item ">
+      <p><code>ferry.png</code></p>
+      <img src="img/ferry.png">
+    </div>
+  </div>
+
+  <button onclick="galerie.previousItem()">Previous</button>
+  <button onclick="galerie.nextItem()">Next</button>
+  
+<script>
+window.onload = function() {
+  window.G = galerie.init();
+};
+</script>
+</body>
+<html>
