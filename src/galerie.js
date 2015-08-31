@@ -16,7 +16,6 @@ var galerie = (function(){
 
     setDataAttr();
     function setDataAttr() {
-      console.log(items);
       for (var e = 0; e < items.length; e++) {
         items[e].setAttribute('data-galerie', e);
       }
